@@ -9,7 +9,7 @@ public interface Value extends Comparable<Value> {
 	public Value run() throws RunException;
 	public void dump();
 
-	public long toNumber() throws RunException;
+	public long toLong() throws RunException;
 	public String toString() throws RunException;
 	public boolean toBoolean() throws RunException;
 

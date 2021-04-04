@@ -76,7 +76,7 @@ public final class Func extends NonIdempotent {
 		}));
 
 		register(new FuncInner('Q', 1, (Value[] args) -> {
-			System.exit((int) args[0].toNumber());
+			System.exit((int) args[0].toLong());
 			return args[0];
 		}));
 

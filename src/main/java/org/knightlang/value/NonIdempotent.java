@@ -4,8 +4,8 @@ import org.knightlang.exception.KnightException;
 
 public abstract class NonIdempotent implements Value {
 	@Override
-	public long toNumber() throws KnightException {
-		return run().toNumber();
+	public long toLong() throws KnightException {
+		return run().toLong();
 	}
 
 	@Override

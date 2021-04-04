@@ -13,7 +13,7 @@ public final class Bool extends Idempotent {
 	}
 
 	@Override
-	public long toNumber() {
+	public long toLong() {
 		return bool ? 1 : 0;
 	}
 

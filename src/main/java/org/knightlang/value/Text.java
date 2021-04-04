@@ -15,7 +15,7 @@ public final class Text extends Idempotent {
 	}
 
 	@Override
-	public long toNumber() {
+	public long toLong() {
 		return 0;
 	}
 
@@ -47,7 +47,7 @@ public final class Text extends Idempotent {
 	@Override
 	public Value multiply(Value rhs) {
 		String ret = "";
-		long amnt = rhs.toNumber();
+		long amnt = rhs.toLong();
 
 		if (amnt < 0) {
 			throw new RunException("cannot multiply a string by a negative amount.");

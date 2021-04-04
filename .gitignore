@@ -1,5 +1,5 @@
 .settings
 target
 .classpath
-.vscode
 .vscode/*
+.ignore

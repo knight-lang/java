@@ -15,7 +15,7 @@ public final class Number extends Idempotent {
 	}
 
 	@Override
-	public long toNumber() {
+	public long toLong() {
 		return number;
 	}
 
@@ -31,22 +31,22 @@ public final class Number extends Idempotent {
 
 	@Override
 	public Value add(Value rhs) {
-		return new Number(number + rhs.toNumber());
+		return new Number(number + rhs.toLong());
 	}
 
 	@Override
 	public Value subtract(Value rhs) {
-		return new Number(number - rhs.toNumber());
+		return new Number(number - rhs.toLong());
 	}
 
 	@Override
 	public Value multiply(Value rhs) {
-		return new Number(number * rhs.toNumber());
+		return new Number(number * rhs.toLong());
 	}
 
 	@Override
 	public Value divide(Value rhs) {
-		long rnum = rhs.toNumber();
+		long rnum = rhs.toLong();
 
 		if (rnum == 0) {
 			throw new RunException("cannot divide by zero");
@@ -57,7 +57,7 @@ public final class Number extends Idempotent {
 
 	@Override
 	public Value modulo(Value rhs) {
-		long rnum = rhs.toNumber();
+		long rnum = rhs.toLong();
 
 		if (rnum == 0) {
 			throw new RunException("cannot modulo by zero");
@@ -73,7 +73,7 @@ public final class Number extends Idempotent {
 
 	@Override
 	public int compareTo(Value rhs) {
-		return Long.compare(number, rhs.toNumber());
+		return Long.compare(number, rhs.toLong());
 	}
 
 	@Override

@@ -7,7 +7,7 @@ public final class Null extends Idempotent {
 	}
 
 	@Override
-	public long toNumber() {
+	public long toLong() {
 		return 0;
 	}
 
