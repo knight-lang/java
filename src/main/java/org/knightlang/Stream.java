@@ -24,10 +24,12 @@ public class Stream implements Iterator<Character> {
 
 	@Override
 	public Character next() {
-		if (!rewound)
-			return iter.next();
+		if (rewound) {
+			rewound = false;
+		} else {
+			prev = iter.next();
+		}
 
-		rewound = false;
 		return prev;
 	}
 

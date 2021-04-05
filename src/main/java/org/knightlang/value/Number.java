@@ -11,7 +11,7 @@ public final class Number extends Idempotent {
 
 	@Override
 	public void dump() {
-		System.out.printf("Number(%l)", number);
+		System.out.printf("Number(%d)", number);
 	}
 
 	@Override

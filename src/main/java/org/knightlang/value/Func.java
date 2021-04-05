@@ -1,7 +1,11 @@
 package org.knightlang.value;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.Scanner;
 import java.util.function.Function;
 
 import org.knightlang.Knight;
@@ -46,25 +50,36 @@ public final class Func extends NonIdempotent {
 	}
 
 	public static class FuncInner {
-		char name;
-		int arity;
-		Function<Value[], Value> func;
-		FuncInner(char name, int arity, Function<Value[], Value> func) {
+		private char name;
+		private int arity;
+		private Function<Value[], Value> func;
+
+		public FuncInner(char name, int arity, Function<Value[], Value> func) {
 			this.name = name; 
 			this.arity = arity;
 			this.func = func;
 		}
+
+		public int getArity() {
+			return arity;
+		}
+
+		public Function<Value[], Value> getFunc() {
+			return func;
+		}
+
+		public char getName() {
+			return name;
+		}
 	}
+
+	private static final Random RANDOM = new Random();
+	private static final Scanner PROMPT = new Scanner(System.in);
 
 	static {
 		// arity zero
-		register(new FuncInner('P', 0, (Value[] args) -> {
-			throw new RunException("todo");
-		}));
-
-		register(new FuncInner('R', 0, (Value[] args) -> {
-			throw new RunException("todo");
-		}));
+		register(new FuncInner('P', 0, (Value[] args) -> new Text(PROMPT.nextLine())));
+		register(new FuncInner('R', 0, (Value[] args) -> new Number(RANDOM.nextLong())));
 
 		// arity one
 		register(new FuncInner('E', 1, (Value[] args) -> Knight.run(args[0].toString())));
@@ -72,20 +87,44 @@ public final class Func extends NonIdempotent {
 		register(new FuncInner('C', 1, (Value[] args) -> args[0].run().run()));
 
 		register(new FuncInner('`', 1, (Value[] args) -> {
-			throw new RunException("todo");
+			Runtime rt = Runtime.getRuntime();
+			String[] commands = {"/bin/sh", "-c", args[0].toString()};
+			Process proc;
+
+			try {
+				proc = rt.exec(commands);
+			} catch (IOException err) {
+				throw new RunException("Cannot run command: " + err);
+			}
+			
+			InputStream stdout = proc.getInputStream();
+			
+			String result = "";
+			byte[] buf = new byte[2048];
+			int read;
+
+			try {
+				while ((read = stdout.read(buf)) != -1)
+					result += new String(buf, 0, read);
+			} catch (IOException err) {
+				throw new RunException("Cannot read stdout: " + err);
+			}
+			
+			return new Text(result);
 		}));
 
 		register(new FuncInner('Q', 1, (Value[] args) -> {
 			System.exit((int) args[0].toLong());
-			return args[0];
+			return null; // just to appease the type checker
 		}));
 
 		register(new FuncInner('!', 1, (Value[] args) -> new Bool(!args[0].toBoolean())));
+		register(new FuncInner('L', 1, (Value[] args) -> new Number(args[0].toString().length())));
 
 		register(new FuncInner('D', 1, (Value[] args) -> {
 			Value arg = args[0].run();
 			arg.dump();
-			System.out.println();
+			System.out.println(); // for trailing newline.
 			return arg;
 		}));
 
@@ -95,7 +134,8 @@ public final class Func extends NonIdempotent {
 			if (str.isEmpty()) {
 				System.out.println();
 			} else if (str.charAt(str.length() - 1) == '\\') {
-				// todo
+				System.out.print(str.substring(0, str.length() - 1));
+				System.out.flush();
 			} else {
 				System.out.println(str);
 			}
@@ -109,26 +149,20 @@ public final class Func extends NonIdempotent {
 		register(new FuncInner('/', 2, (Value[] args) -> args[0].divide(args[1])));
 		register(new FuncInner('%', 2, (Value[] args) -> args[0].modulo(args[1])));
 		register(new FuncInner('^', 2, (Value[] args) -> args[0].exponentiate(args[1])));
+		register(new FuncInner('?', 2, (Value[] args) -> new Bool(args[0].run().equals(args[1].run()))));
+
 		register(new FuncInner('<', 2, (Value[] args) -> new Bool(args[0].compareTo(args[1]) < 0)));
 		register(new FuncInner('>', 2, (Value[] args) -> new Bool(args[0].compareTo(args[1]) > 0)));
 		register(new FuncInner('&', 2, (Value[] args) -> {
 			Value lhs = args[0].run();
 			
-			if (lhs.toBoolean()) {
-				return args[1].run();
-			} else {
-				return args[1].run();
-			}
+			return lhs.toBoolean() ? args[1].run() : lhs;
 		}));
 
 		register(new FuncInner('|', 2, (Value[] args) -> {
 			Value lhs = args[0].run();
-			
-			if (!lhs.toBoolean()) {
-				return args[1].run();
-			} else {
-				return args[1].run();
-			}
+
+			return lhs.toBoolean() ? lhs : args[1].run();
 		}));
 
 		register(new FuncInner(';', 2, (Value[] args) -> {
@@ -155,12 +189,24 @@ public final class Func extends NonIdempotent {
 		}));
 
 		register(new FuncInner('G', 3, (Value[] args) -> {
-			throw new RunException("todo");
+			String str = args[0].toString();
+			int start = (int) args[1].toLong();
+			int length = (int) args[2].toLong();
+
+			if (str.isEmpty()) return new Text("");
+
+			return new Text(str.substring(start, start + length));
 		}));
 
 		// arity four
 		register(new FuncInner('S', 4, (Value[] args) -> {
-			throw new RunException("todo");
+			String str = args[0].toString();
+			int start = (int) args[1].toLong();
+			int length = (int) args[2].toLong();
+			String repl = args[3].toString();
+
+			return new Text(str.substring(0, start) + repl + str.substring(start + length));
+
 		}));
 	}
 }

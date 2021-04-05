@@ -16,7 +16,27 @@ public final class Text extends Idempotent {
 
 	@Override
 	public long toLong() {
-		return 0;
+		String txt = text;
+
+		while (!txt.isEmpty() && Character.isWhitespace(txt.charAt(0)))
+			txt = txt.substring(1);
+		
+		if (txt.isEmpty())
+			return 0;
+
+		boolean isNegative = txt.charAt(0) == '-';
+
+		if (isNegative || txt.charAt(0) == '+')
+			txt = txt.substring(1);
+		
+		long result = 0;
+
+		while (!txt.isEmpty() && Character.isDigit(txt.charAt(0))) {
+			result = result * 10 + txt.charAt(0) - '0';
+			txt = txt.substring(1);
+		}
+
+		return result * (isNegative ? -1 : 1);
 	}
 
 	@Override
@@ -31,7 +51,7 @@ public final class Text extends Idempotent {
 
 	@Override
 	public boolean equals(Object rhs) {
-		return rhs instanceof Text && ((Text) rhs).text == text;
+		return rhs instanceof Text && text.equals(((Text) rhs).text);
 	}
 
 	@Override

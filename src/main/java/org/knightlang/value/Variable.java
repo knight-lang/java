@@ -18,7 +18,7 @@ public final class Variable extends NonIdempotent {
 
 	@Override
 	public void dump() {
-		System.out.printf("Variable(%s)", name);
+		System.out.printf("Identifier(%s)", name);
 	}
 
 	@Override
