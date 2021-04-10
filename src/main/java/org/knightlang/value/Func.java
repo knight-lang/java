@@ -194,7 +194,6 @@ public final class Func extends NonIdempotent {
 			int length = (int) args[2].toLong();
 
 			if (str.isEmpty()) return new Text("");
-
 			return new Text(str.substring(start, start + length));
 		}));
 

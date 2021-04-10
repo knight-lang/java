@@ -13,7 +13,6 @@ public final class Variable extends NonIdempotent {
 
 	private Variable(String name) {
 		this.name = name;
-		this.value = null;
 	}
 
 	@Override
@@ -32,7 +31,6 @@ public final class Variable extends NonIdempotent {
 
 	public static Variable fetch(String name) {
 		return VARIABLES.computeIfAbsent(name, Variable::new);
-
 	}
 	
 	public void assign(Value newValue) {

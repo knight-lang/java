@@ -68,7 +68,28 @@ public final class Number extends Idempotent {
 
 	@Override
 	public Value exponentiate(Value rhs) {
-		throw new RunException("todo: exponentiate");
+		long power = rhs.toLong();
+
+		if (power < 0) {
+			switch ((int) number) {
+				case 1:
+					return new Number(1);
+				case -1:
+					return new Number(power % 2 == 0 ? 1 : -1);
+				case 0:
+					 throw new RunException("cannot exponentiate zero to a negative power");
+				default:
+					return new Number(0);
+			}
+		}
+
+		long result = 1;
+
+		for (; power != 0; power--) {
+			result *= number;
+		}
+
+		return new Number(result);
 	}
 
 	@Override

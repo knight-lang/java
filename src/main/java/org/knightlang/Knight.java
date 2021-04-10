@@ -25,8 +25,9 @@ public class Knight {
 		switch (c = stream.next()) {
 			case '#':
 				do {
-					if (!stream.hasNext())
+					if (!stream.hasNext()) {
 						return null;
+					}
 				} while (stream.next() != '\n');
 				// fallthrough.
 
@@ -71,6 +72,7 @@ public class Knight {
 			case 'F':
 			case 'N':
 				Value ret = c == 'N' ? new Null() : new Bool(c == 'T');
+
 				while (stream.hasNext()) {
 					if (!Character.isUpperCase(c = stream.next()) && c != '_') {
 						stream.rewind();
@@ -97,8 +99,9 @@ public class Knight {
 			default:
 				FuncInner func = Func.fetch(c);
 
-				if (func == null)
+				if (func == null) {
 					throw new ParseException("Unknown token start '" + c + "'");
+				}
 
 				if (Character.isUpperCase(c)) {
 					while (stream.hasNext()) {
@@ -114,8 +117,9 @@ public class Knight {
 				for (int i = 0; i < args.length; ++i) {
 					args[i] = parse(stream);
 
-					if (args[i] == null)
+					if (args[i] == null) {
 						throw new ParseException("Couldn't parse argument " + i + " for function " + func.getName());
+					}
 				}
 
 				return new Func(args, func);
