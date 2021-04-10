@@ -204,7 +204,10 @@ public final class Func extends NonIdempotent {
 			int length = (int) args[2].toLong();
 			String repl = args[3].toString();
 
-			return new Text(str.substring(0, start) + repl + str.substring(start + length));
+			String prefix = str.substring(0, start);
+			String suffix = start + length > str.length() ? "" : str.substring(start + length);
+
+			return new Text(prefix + repl + suffix);
 
 		}));
 	}
