@@ -79,7 +79,7 @@ public final class Func extends NonIdempotent {
 	static {
 		// arity zero
 		register(new FuncInner('P', 0, (Value[] args) -> new Text(PROMPT.nextLine())));
-		register(new FuncInner('R', 0, (Value[] args) -> new Number(RANDOM.nextLong())));
+		register(new FuncInner('R', 0, (Value[] args) -> new Number(Math.abs(RANDOM.nextLong()))));
 
 		// arity one
 		register(new FuncInner('E', 1, (Value[] args) -> Knight.run(args[0].toString())));

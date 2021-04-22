@@ -1,0 +1,3 @@
+#!/bin/sh
+
+java -Xss515m -jar "$(dirname "$0")"/target/knightlang-1.0.jar "$@"
